@@ -27,12 +27,14 @@ while True:
             pygame.quit()
             sys.exit()
     
-            
+    # draw bg
+    display_surface.fill('black')
+    
     # draw
     all_sprites.draw(display_surface)
     
     # update
-    all_sprites.update()
+    all_sprites.update(dt)
     
     # update the display surface
     pygame.display.update()
