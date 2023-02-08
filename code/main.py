@@ -39,7 +39,11 @@ all_sprites = AllSprites()
 
 # 
 player = Player((600, 400), all_sprites)
-car = Car((800, 200), all_sprites)
+
+# timer
+car_timer = pygame.event.custom_type()
+pygame.time.set_timer(car_timer, 50)
+pos_list = []
 
 # main game loop
 while True:
@@ -50,6 +54,14 @@ while True:
         if event.type ==    pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == car_timer:
+            random_pos = random.choice(CAR_START_POSITIONS)
+            if random_pos not in pos_list:
+                pos_list.append(random_pos)
+                pos = (random_pos[0], random_pos[1]+ random.randint(-8, 8))
+                car = Car((pos), all_sprites)
+            if len(pos_list) > 5:
+                del pos_list[0]
     
     # draw bg
     display_surface.fill('black')
