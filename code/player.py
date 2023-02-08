@@ -11,7 +11,6 @@ class Player(pygame.sprite.Sprite):
         self.import_assets()
         self.frame_index = 0
         self.status = "down"
-        # self.image = self.animation[self.frame_index]
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(center=(pos))
         
@@ -34,7 +33,6 @@ class Player(pygame.sprite.Sprite):
                     key = folder[0].split('\\')[2]
                     self.animations[key].append(surf)
                     
-        print(self.animations)
             
     def move(self, dt):
         # normalize a vector -> vector should have length of 1
@@ -73,7 +71,9 @@ class Player(pygame.sprite.Sprite):
             self.frame_index += 6 * dt 
             if self.frame_index >= len(current_animation):
                 self.frame_index = 0
-            self.image = current_animation[int(self.frame_index)]       
+        else:
+            self.frame_index = 0
+        self.image = current_animation[int(self.frame_index)]       
             
     def update(self, dt):
         self.input()

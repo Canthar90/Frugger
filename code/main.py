@@ -3,6 +3,7 @@ from settings import *
 import sys
 import random
 from player import Player
+from car import Car
 
 
 # base setup
@@ -16,6 +17,7 @@ all_sprites = pygame.sprite.Group()
 
 # 
 player = Player((600, 400), all_sprites)
+car = Car((800, 200), all_sprites)
 
 # main game loop
 while True:
