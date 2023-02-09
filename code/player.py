@@ -4,7 +4,7 @@ from os import walk
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups):
+    def __init__(self, pos, groups, colision_sprites):
         
         # image
         super().__init__(groups)
@@ -18,6 +18,30 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(self.rect.center)
         self.direction = pygame.math.Vector2()
         self.speed = 200
+        
+        # collisions
+        self.collisions_sprites = colision_sprites
+        
+    def collision(self, direction):
+        """Checking if any object from self.collision_sprites colide with Player sprite"""
+        if direction == "horizontal":
+            for sprite in self.collisions_sprites.sprites():
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x > 0: # moving right
+                        self.rect.right = sprite.rect.left
+                        self.pos.x = self.rect.centerx
+                    if self.direction.x < 0: # moving left
+                        self.rect.left = sprite.rect.right
+                        self.pos.x =  self.rect.centerx
+        else:
+            for sprite in self.collisions_sprites.sprites():
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.y > 0: # move down
+                        self.rect.bottom = sprite.rect.top
+                        self.pos.y = self.rect.centery
+                    if self.direction.y < 0: # move up
+                        self.rect.top = self.rect.bottom
+                        self.pos.y = self.rect.centery
         
     def import_assets(self):
         self.animations = {}
@@ -39,8 +63,16 @@ class Player(pygame.sprite.Sprite):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
         
-        self.pos += self.direction * self.speed * dt
-        self.rect.center = (round(self.pos.x), round(self.pos.y))
+        # hotizotal movement + collision
+        self.pos.x += self.direction.x * self.speed * dt
+        self.rect.centerx = round(self.pos.x)
+        self.collision("horizontal")
+        
+        # vertical movement + collision
+        self.pos.y += self.direction.y * self.speed *dt
+        self.rect.centery =  round(self.pos.y)
+        self.collision("vertical")
+        
         
     def input(self):
         keys = pygame.key.get_pressed()
@@ -75,7 +107,7 @@ class Player(pygame.sprite.Sprite):
             self.frame_index = 0
         self.image = current_animation[int(self.frame_index)]       
             
-    def update(self, dt):
+    def update(self, dt): 
         self.input()
         self.move(dt)
         self.animate(dt)
