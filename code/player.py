@@ -1,6 +1,7 @@
 import pygame
 import os
 from os import walk
+import sys
 
 
 class Player(pygame.sprite.Sprite):
@@ -21,27 +22,38 @@ class Player(pygame.sprite.Sprite):
         
         # collisions
         self.collisions_sprites = colision_sprites
+        self.hittbox = self.rect.inflate(0, -self.rect.height/2)
         
     def collision(self, direction):
         """Checking if any object from self.collision_sprites colide with Player sprite"""
         if direction == "horizontal":
             for sprite in self.collisions_sprites.sprites():
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hittbox.colliderect(self.hittbox):
+                    if hasattr(sprite, 'name') and sprite.name =="car":
+                        pygame.quit()
+                        sys.exit()
                     if self.direction.x > 0: # moving right
-                        self.rect.right = sprite.rect.left
-                        self.pos.x = self.rect.centerx
+                        self.hittbox.right = sprite.hittbox.left
+                        self.pos.x = self.hittbox.centerx
+                        self.rect.centerx = self.hittbox.centerx
                     if self.direction.x < 0: # moving left
-                        self.rect.left = sprite.rect.right
-                        self.pos.x =  self.rect.centerx
+                        self.hittbox.left = sprite.hittbox.right
+                        self.pos.x =  self.hittbox.centerx
+                        self.rect.centerx = self.hittbox.centerx
         else:
             for sprite in self.collisions_sprites.sprites():
-                if sprite.rect.colliderect(self.rect):
+                if sprite.hittbox.colliderect(self.hittbox):
+                    if hasattr(sprite, 'name') and sprite.name =="car":
+                        pygame.quit()
+                        sys.exit()
                     if self.direction.y > 0: # move down
-                        self.rect.bottom = sprite.rect.top
-                        self.pos.y = self.rect.centery
+                        self.hittbox.bottom = sprite.hittbox.top
+                        self.pos.y = self.hittbox.centery
+                        self.rect.centery = self.hittbox.centery
                     if self.direction.y < 0: # move up
-                        self.rect.top = self.rect.bottom
-                        self.pos.y = self.rect.centery
+                        self.hittbox.top = sprite.hittbox.bottom
+                        self.pos.y = self.hittbox.centery
+                        self.rect.centery = self.hittbox.centery
         
     def import_assets(self):
         self.animations = {}
@@ -65,12 +77,14 @@ class Player(pygame.sprite.Sprite):
         
         # hotizotal movement + collision
         self.pos.x += self.direction.x * self.speed * dt
-        self.rect.centerx = round(self.pos.x)
+        self.hittbox.centerx = round(self.pos.x)
+        self.rect.centerx = self.hittbox.centerx
         self.collision("horizontal")
         
         # vertical movement + collision
         self.pos.y += self.direction.y * self.speed *dt
-        self.rect.centery =  round(self.pos.y)
+        self.hittbox.centery = round(self.pos.y)
+        self.rect.centery =  self.hittbox.centery
         self.collision("vertical")
         
         
