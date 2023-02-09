@@ -46,6 +46,16 @@ car_timer = pygame.event.custom_type()
 pygame.time.set_timer(car_timer, 50)
 pos_list = []
 
+# font
+font = pygame.font.Font(None, 50)
+text_surf = font.render("You won!", True, (255, 255, 255))
+text_rect = text_surf.get_rect(midbottom=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+
+# music
+music = pygame.mixer.Sound("audio\music.mp3") 
+music.play(loops=-1)
+music.set_volume(0.75)
+
 # Sprite setup
 for file_name, pos_list in SIMPLE_OBJECTS.items():
     path = f"graphics\objects\simple\{file_name}.png"
@@ -80,15 +90,13 @@ while True:
     # draw bg
     display_surface.fill('black')
     
-    # draw
-    
     
     if player.pos.y >= 1180:
         all_sprites.customize_draw()
-        
         all_sprites.update(dt)
-    # update
-    # all_sprites.update(dt)
-    
+    else:
+        display_surface.fill("teal")
+        display_surface.blit(text_surf, text_rect)
+   
     # update the display surface
     pygame.display.update()
