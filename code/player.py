@@ -5,7 +5,7 @@ import sys
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, colision_sprites):
+    def __init__(self, pos, groups, colision_sprites, menu):
         
         # image
         super().__init__(groups)
@@ -24,14 +24,16 @@ class Player(pygame.sprite.Sprite):
         self.collisions_sprites = colision_sprites
         self.hittbox = self.rect.inflate(0, -self.rect.height/2)
         
+        self.menu = menu
+        
     def collision(self, direction):
         """Checking if any object from self.collision_sprites colide with Player sprite"""
         if direction == "horizontal":
             for sprite in self.collisions_sprites.sprites():
                 if sprite.hittbox.colliderect(self.hittbox):
                     if hasattr(sprite, 'name') and sprite.name =="car":
-                        pygame.quit()
-                        sys.exit()
+                        self.menu.flag = True
+                        self.menu.type = "loose"
                     if self.direction.x > 0: # moving right
                         self.hittbox.right = sprite.hittbox.left
                         self.pos.x = self.hittbox.centerx
@@ -44,8 +46,8 @@ class Player(pygame.sprite.Sprite):
             for sprite in self.collisions_sprites.sprites():
                 if sprite.hittbox.colliderect(self.hittbox):
                     if hasattr(sprite, 'name') and sprite.name =="car":
-                        pygame.quit()
-                        sys.exit()
+                        self.menu.flag = True
+                        self.menu.type = "loose"
                     if self.direction.y > 0: # move down
                         self.hittbox.bottom = sprite.hittbox.top
                         self.pos.y = self.hittbox.centery

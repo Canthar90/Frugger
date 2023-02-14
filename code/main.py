@@ -5,6 +5,7 @@ import random
 from player import Player
 from car import Car
 from sprite import SimpleSprite, LongSprite
+from menu import Menu
 
 
 class AllSprites(pygame.sprite.Group):
@@ -39,7 +40,7 @@ all_sprites = AllSprites()
 obsticle_sprites = pygame.sprite.Group()
 
 # 
-player = Player((2062, 3274), all_sprites, obsticle_sprites)
+player = Player((2062, 3274), all_sprites, obsticle_sprites, None)
 
 # timer
 car_timer = pygame.event.custom_type()
@@ -55,6 +56,14 @@ text_rect = text_surf.get_rect(midbottom=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
 music = pygame.mixer.Sound("audio\music.mp3") 
 music.play(loops=-1)
 music.set_volume(0.75)
+
+# menu
+menu = Menu(
+    player=player, WINDOW_WIDTH=WINDOW_WIDTH,
+    WINDOW_HEIGTH=WINDOW_HEIGHT, display=display_surface
+)
+player.menu = menu
+
 
 # Sprite setup
 for file_name, pos_list in SIMPLE_OBJECTS.items():
@@ -91,12 +100,15 @@ while True:
     display_surface.fill('black')
     
     
-    if player.pos.y >= 1180:
+    if player.pos.y >= 1180 and not menu.flag:
         all_sprites.customize_draw()
         all_sprites.update(dt)
+    elif player.pos.y < 1180 and not menu.flag:
+        menu.flag = True
+        menu.type = "win"
     else:
-        display_surface.fill("teal")
-        display_surface.blit(text_surf, text_rect)
+        menu.draw()
+        menu.update()
    
     # update the display surface
     pygame.display.update()
