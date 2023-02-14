@@ -60,7 +60,8 @@ music.set_volume(0.75)
 # menu
 menu = Menu(
     player=player, WINDOW_WIDTH=WINDOW_WIDTH,
-    WINDOW_HEIGTH=WINDOW_HEIGHT, display=display_surface
+    WINDOW_HEIGTH=WINDOW_HEIGHT, display=display_surface,
+    killable=all_sprites
 )
 player.menu = menu
 
@@ -87,7 +88,7 @@ while True:
         if event.type ==    pygame.QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == car_timer:
+        if event.type == car_timer and not menu.flag:
             random_pos = random.choice(CAR_START_POSITIONS)
             if random_pos not in pos_list:
                 pos_list.append(random_pos)

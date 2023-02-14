@@ -4,7 +4,7 @@ import sys
 
 class Menu:
     """Creates simple death screen menu"""
-    def __init__(self, player, WINDOW_WIDTH, WINDOW_HEIGTH, display):
+    def __init__(self, player, WINDOW_WIDTH, WINDOW_HEIGTH, display, killable):
         self.font = pygame.font.Font(None, 50)
         
         text = "You have been struck by a car"
@@ -26,6 +26,7 @@ class Menu:
         self.display = display
         self.flag = False
         self.type = ""
+        self.killable = killable
     
     def click_detection(self):
         mouse = pygame.mouse.get_pos()
@@ -57,8 +58,14 @@ class Menu:
             self.display.blit(self.replay, self.replay_rect)
             self.display.blit(self.exit, self.exit_rect)
     
+    def kill_cars(self):
+        for sprite in self.killable.sprites():
+            if hasattr(sprite, "name") and sprite.name == "car":
+                sprite.kill()
+    
     def update(self):
         self.click_detection()
+        self.kill_cars
         
         
     
